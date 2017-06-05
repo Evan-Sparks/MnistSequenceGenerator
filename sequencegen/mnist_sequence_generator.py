@@ -158,4 +158,4 @@ if __name__ == "__main__":
     image_list = _generate_sequence_helper(sequence, (min_spacing, max_spacing), width)
     cwd = os.getcwd()
 
-    png.from_array(image_list, 'L').save("{}\\{}.png".format(cwd, sequence_string))
+    png.from_array(image_list, 'L').save(os.path.join(cwd, "{}.png".format(sequence_string)))
