@@ -32,9 +32,13 @@ class ImageDownloader:
     def __init__(self):
         _download_file(get_image_url(), get_image_file_path())
         _download_file(get_label_url(), get_label_file_path())
+        image_bytes = self._get_bytes_from_file(4, 12)
+        self.num_images = int.from_bytes(image_bytes[0:4], byteorder='big', signed=False)
+        self.num_rows = int.from_bytes(image_bytes[4:8], byteorder='big', signed=False)
+        self.num_columns = int.from_bytes(image_bytes[8:12], byteorder='big', signed=False)
 
     @staticmethod
-    def get_image_bytes(start_offset, length):
+    def _get_bytes_from_file(start_offset, length):
         """
         Get a block of bytes from the digit image file.
         :param start_offset: The offset in the digit image file to start reading from.
@@ -46,6 +50,18 @@ class ImageDownloader:
         image_bytes = image_file.read(length)
         image_file.close()
         return image_bytes
+
+    def get_image_bytes(self, index):
+        """
+        Get the bytes associated with the image in position index in the file.
+        :param index: The index of the image in the file, note the index is global not just among images of a given
+        label.
+        :return: A tuple conatinaing a contiguous block of bytes representing the image, an the number of rows as an int
+        and the number of columns as an int.
+        """
+        length = self.num_rows * self.num_columns
+        offset = 16 + length * index
+        return self._get_bytes_from_file(offset, length), self.num_rows, self.num_columns
 
     @staticmethod
     def get_labels():
