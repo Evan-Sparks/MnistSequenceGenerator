@@ -1,0 +1,1 @@
+from sequencegen.mnist_sequence_generator import generate_mnist_sequence
