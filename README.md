@@ -3,7 +3,7 @@
 A simple script to generate images of handwritten numbers by concatenating digit images from the [MNIST database](http://yann.lecun.com/exdb/mnist/).
 
 Provides the following function
-'''python
+```python
 def generate_mnist_sequence(digits, spacing_range, image_width):
     """
     Generate a numpy array encoding an image of a sequence of digits with greyscale pixel values between 0 and 1.
@@ -14,24 +14,24 @@ def generate_mnist_sequence(digits, spacing_range, image_width):
     to make that number of columns.
     :return: A numpy array encoding an image of a sequence of digits.
     """
-'''
+```
 
 as well as a command line script which saves a .png image of the produced digit sequence.
 
 Installing on a fresh Ubuntu VM.
-'''
+```
 sudo apt-get update
 sudo apt-get -y install python3-pip
 git clone https://github.com/Evan-Sparks/MnistSequenceGenerator.git
 sudo python3 setup.py install
-'''
+```
 
 Executing from the command line.
-'''
+```
 # example with sequence = 0123456789, min spacing = 1, max spacing = 10, image_width = 400
 # outputs a file named 0123456789.png in the current working directory
 python3 sequencegen/mnist_sequence_generator.py 0123456789 1 10 400
-'''
+```
 
 Implementation Details:
 The implementation is made up of three components. A data source in image_source.py, a parser and data interface in
