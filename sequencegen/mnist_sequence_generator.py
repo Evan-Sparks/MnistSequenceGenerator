@@ -9,8 +9,6 @@ import os
 from sequencegen.image_source import ImagesByLabel
 from sequencegen.image_downloader import ImageDownloader
 
-pad_left_config = False
-
 
 def generate_mnist_sequence(digits, spacing_range, image_width):
     """
@@ -35,6 +33,8 @@ def _generate_sequence_helper(digits, spacing_range, image_width, image_source, 
     digits.
     :param image_width: The number of columns in the result.  The concatenation will be truncated or padded on the right
     to make that number of columns.
+    :param image_source: A source of image bytes and labels.
+    :param random_: An optional instance of Random.
     :return: A numpy array encoding an image of a sequence of digits.
     """
     if not reduce((lambda x, y: x and y), map((lambda z: isinstance(z, int) and 0 <= z < 10), digits)):
@@ -54,7 +54,7 @@ def _generate_sequence_helper(digits, spacing_range, image_width, image_source, 
         chosen_image_index = random_.randrange(len(images[digit]))
         chosen_images.append(images[digit][chosen_image_index])
     num_rows = max(map(len, chosen_images))
-    return _concatenate_lists(_add_separators(chosen_images, spacing_range, pad_left_config, random_),
+    return _concatenate_lists(_add_separators(chosen_images, spacing_range, random_),
                               num_rows, image_width)
 
 
@@ -110,17 +110,16 @@ def _concatenate_lists(images, num_rows, num_cols):
     return output_array
 
 
-def _add_separators(images, spacing_range, pad_left, random_):
+def _add_separators(images, spacing_range, random_):
     """
     Insert random-width, single-row spacer lists between each lists in arrays.
     :param images: A list of digit image lists to place spacers between.
     :param spacing_range: A tuple of two integers, the inclusive upper and lower bounds of the random spacer width.
-    :param pad_left: If true a spacer will be placed before the first digit.
     :return: A new list containing the values or arrays interspersed with spacers.
     """
     output = []
     for index in range(len(images)):
-        if index != 0 or pad_left:
+        if index != 0:
             spacing = random_.randrange(spacing_range[0], spacing_range[1] + 1)
             output.append([[0 for _ in range(spacing)]])
         output.append(images[index])
